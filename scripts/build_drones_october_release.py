@@ -77,7 +77,7 @@ def main():
 ''')
     (args.out/'LICENSE_DATA.md').write_text('证据归档、文件清单和发布元数据采用 CC BY 4.0：https://creativecommons.org/licenses/by/4.0/ 。署名 Jiajun Li、论文标题及发布标签。本声明不重新许可第三方组件或源码。\n')
     shutil.copyfile(Path(__file__).with_name('verify_drones_public_release.py'),args.out/'verify_release.py')
-    names=['README.md','LICENSE_DATA.md','file_manifest.json','verify_release.py']+[x.name for x in sorted(args.out.glob('*.zip'))]
+    names=['README.md','LICENSE_DATA.md','file_manifest.json','verify_release.py']+[x.name for x in sorted(args.out.glob('*.zip')) if not x.name.startswith('._')]
     (args.out/'SHA256SUMS').write_text(''.join(f'{sha256(args.out/name)}  {name}\n' for name in names))
     print(f'完成：{len(entries)} 文件；潜在敏感项 0',flush=True)
 if __name__=='__main__':main()
