@@ -30,6 +30,6 @@ python scripts/validate_dynamic_admission.py
 
 ## 数据和闭环复现
 
-Git 源码不包含论文、投稿文件、checkpoint 或实验产物。可公开的轨迹、摘要、冻结配置及哈希通过 [数据 Release](DATA_RELEASE.md) 单独提供；历史与新增证据保持各自版本和分母。
+可公开的轨迹、摘要、冻结配置及哈希通过 [数据 Release](DATA_RELEASE.md) 单独提供；历史与新增证据保持各自版本和分母。
 
 PX4/Gazebo 闭环需要另行准备仿真、ROS 2、MQTT 与适配桥。见 [闭环复现说明](docs/PX4_GAZEBO_REPRODUCTION.md) 和 [可复现性说明](REPRODUCIBILITY.md)。复跑使用新输出目录；有效负结果保留，基础设施无效尝试单独诊断，不能改变门限或种子救结果。
