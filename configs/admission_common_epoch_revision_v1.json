@@ -1,0 +1,8 @@
+{
+  "revision_id": "admission-common-epoch-v1",
+  "implementation_version": "dynamic_admission_v6_common_epoch_v1",
+  "recoverability_admission_align_states": true,
+  "predictive_recovery": false,
+  "description": "将接纳的异步遥测对齐到共同控制时刻；与原RA使用相同匀速推算，保持候选和全部安全门限。",
+  "validation": "原开发4、资格5、主实验20个三条件配对，完整新GO依赖；有效旧拒绝保留。"
+}

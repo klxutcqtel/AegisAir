@@ -1,0 +1,143 @@
+{
+  "protocol_id": "aegisair-execution-admission-px4-development-v2",
+  "phase": "独立v2开发；失效机故障前悬停隔离动态转弯机制，v1原结果保留",
+  "max_steps": 600,
+  "rate_hz": 20,
+  "drone_ids": [
+    2,
+    3
+  ],
+  "conditions": [
+    "GEOMETRY",
+    "NOMINAL_DYNAMIC",
+    "HOLD"
+  ],
+  "recoverability_admission": {
+    "clearance_m": 2.4,
+    "tracking_error_buffer_m": 0.2,
+    "braking_accel_mps2": 2.0,
+    "braking_accel_uncertainty_mps2": 0.25,
+    "ring_extra_m": [
+      0.4,
+      0.8,
+      1.2
+    ],
+    "ring_samples": 32,
+    "arena": [
+      -6.0,
+      6.0,
+      -6.0,
+      6.0
+    ],
+    "waypoint_epsilon_m": 0.55,
+    "max_route_length_m": 18.0,
+    "dt_s": 0.05,
+    "rollout_horizon_s": 16.0,
+    "reaction_delay_s": 0.05,
+    "goal_gain_s_inv": 1.5,
+    "velocity_gain_s_inv": 2.0,
+    "healthy_velocity_limit_mps": 1.5,
+    "healthy_acceleration_limit_mps2": 2.0,
+    "execution_tau_s": 0.7,
+    "command_feedforward_tau_s": 0.7,
+    "terminal_speed_mps": 0.15,
+    "stabilization_wait_s": 2.0,
+    "stabilization_speed_margin_mps": 0.05,
+    "stabilization_consecutive_samples": 3
+  },
+  "ra_config": {
+    "tau_ctrl_s": 0.2,
+    "execution_tau_s": 0.7,
+    "k1": 4,
+    "k2": 4,
+    "boundary_guard": 1,
+    "boundary_buffer_m": 0.3,
+    "prediction_execution_fraction": 0,
+    "prediction_steps": 3,
+    "recovery_reserve_threshold": 1,
+    "recovery_alpha": 0.5,
+    "recovery_braking_accel_mps2": 2,
+    "recovery_boundary_buffer_m": 0.3,
+    "recovery_clear_steps": 5
+  },
+  "geometries": {
+    "turning": {
+      "reset_starts": {
+        "2": [
+          -1.0,
+          0.0,
+          2.5
+        ],
+        "3": [
+          -5.0,
+          0.8,
+          2.5
+        ]
+      },
+      "base_goals": {
+        "2": [
+          4.0,
+          0.0,
+          2.5
+        ],
+        "3": [
+          -5.0,
+          -4.0,
+          2.5
+        ]
+      },
+      "critical_goal": [
+        4.0,
+        0.0
+      ],
+      "waypoint_routes": [
+        [
+          [
+            -1.7413432236612871,
+            3.7269840655322755
+          ]
+        ],
+        [
+          [
+            -1.7413432236612871,
+            -3.7269840655322755
+          ]
+        ],
+        [
+          [
+            -1.0,
+            3.8
+          ]
+        ]
+      ]
+    }
+  },
+  "trials": [
+    {
+      "trial_id": "execpx4_v2_dev01",
+      "geometry_id": "turning",
+      "seed": 42001,
+      "change_step": 18,
+      "condition_order": [
+        "GEOMETRY",
+        "NOMINAL_DYNAMIC",
+        "HOLD"
+      ]
+    },
+    {
+      "trial_id": "execpx4_v2_dev02",
+      "geometry_id": "turning",
+      "seed": 42002,
+      "change_step": 20,
+      "condition_order": [
+        "NOMINAL_DYNAMIC",
+        "HOLD",
+        "GEOMETRY"
+      ]
+    }
+  ],
+  "scope": "故障前失效机名义悬停，所有实际命令仍经RA；健康机向下运动。共享固定航点库与原RA。独立开发v2，不修改v1、不冒称盲测。",
+  "stop_rule": "原基础设施规则保留；完整配对后动态条件必须提交完成、间距>=2.4m、rho>0且无选定输出不可行/权限绕过/发布未知，否则保留有效负结果并停止后续配对。",
+  "failed_vehicle_loiter": true,
+  "require_dynamic_turn_completion": true
+}

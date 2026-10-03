@@ -670,6 +670,17 @@ def _propagate_states(
     return propagated
 
 
+def _admission_snapshots_at_epoch(
+    snapshots: dict[int, DroneSnapshot], timestamp_ms: int,
+) -> tuple[dict[int, DroneSnapshot], dict[int, float]]:
+    """将接纳使用的异步遥测对齐到本控制周期，保留原测量时间戳。"""
+    ages = {
+        drone: max(0.0, (timestamp_ms - snapshot.timestamp_ms) / 1000.0)
+        for drone, snapshot in snapshots.items()
+    }
+    return _propagate_states(snapshots, ages), ages
+
+
 def _fresh_local_state(snapshot: DroneSnapshot, now_ms: int):
     """Return a covariance-zero current onboard state for a local RA view."""
     return EstimatedState(
@@ -1679,6 +1690,7 @@ def run_mqtt_loop(
     space_time_reservation_coordinator: C3SpaceTimeReservationCoordinator | None = None,
     group_slot_coordinator: C3GroupSlotCoordinator | None = None,
     recoverability_admission_coordinator: Any | None = None,
+    recoverability_admission_align_states: bool = False,
 ) -> dict[str, Any]:
     """Live PX4 loop: arm/takeoff, then RA-filtered closed-loop control.
 
@@ -2077,10 +2089,22 @@ def run_mqtt_loop(
             ):
                 failed.add(failed_drone)
 
+            admission_alignment = None
             if recoverability_admission_coordinator is not None:
+                admission_snapshots = snapshots
+                if recoverability_admission_align_states:
+                    admission_snapshots, admission_ages = _admission_snapshots_at_epoch(
+                        snapshots, timestamp_ms,
+                    )
+                    admission_alignment = {
+                        "epoch_ms": timestamp_ms,
+                        "method": "constant_velocity_to_control_epoch",
+                        "ages_s": admission_ages,
+                        "positions": {i: list(snap.position) for i, snap in admission_snapshots.items()},
+                    }
                 overrides = recoverability_admission_coordinator.step(
                     step=step,
-                    snapshots=snapshots,
+                    snapshots=admission_snapshots,
                     base_goals=base_goals,
                     mission_change=(
                         mission_change if step == change_step else None
@@ -2807,6 +2831,7 @@ def run_mqtt_loop(
                             if coordination_decision is not None
                             else None
                         ),
+                        "recoverability_admission_alignment": admission_alignment,
                         "recoverability_admission": (
                             recoverability_admission_coordinator.summary()
                             if recoverability_admission_coordinator is not None

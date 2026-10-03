@@ -32,7 +32,7 @@ def main():
     p.add_argument('--single-group-seed', type=int, help='仅供修正版 GroupSlot 调度器补跑缺失 seed')
     args = p.parse_args()
     manifest = json.loads(args.manifest.read_bytes())
-    if args.single_group_seed is not None and (args.family!='group' or manifest.get('revision_id')!='group-corrected-v2'):
+    if args.single_group_seed is not None and (args.family!='group' or manifest.get('revision_id') not in {'group-corrected-v2','reserve-only-rerun-v1'}):
         p.error('单 seed 仅用于修正版 GroupSlot')
     if args.single_trial or args.single_method:
         c1_selection = (manifest['protocol_id'] in {
@@ -43,9 +43,9 @@ def main():
                 } and args.family == 'c1' and args.single_trial and args.single_method)
         c3_selection = (args.family == 'c3' and args.single_trial and
                         manifest['protocol_id']=='aegisair-c3-closed-loop-v3-hocbf-v4-validation-v1' and
-                        manifest.get('revision_id')=='c3-corrected-v2')
+                        manifest.get('revision_id') in {'c3-corrected-v2','reserve-only-rerun-v1'})
         admission_selection = (args.family == 'admission' and args.single_trial and args.single_method and
-            manifest.get('revision_id') in {'admission-corrected-v2','admission-corrected-v5','admission-arc-probe-v6','admission-corrected-v6'} and manifest['protocol_id'] in {
+            manifest.get('revision_id') in {'admission-corrected-v2','admission-corrected-v5','admission-arc-probe-v6','admission-corrected-v6','reserve-only-rerun-v1','admission-common-epoch-v1'} and manifest['protocol_id'] in {
                 'aegisair-c-recoverability-admission-calibration-v4',
                 'aegisair-c-recoverability-admission-qualification-v4',
                 'aegisair-admission-comparison-development-v1',

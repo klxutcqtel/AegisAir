@@ -71,7 +71,7 @@ def _ra_kwargs(config: dict[str, Any]) -> dict[str, Any]:
         "hocbf_boundary_buffer_m": float(config["boundary_buffer_m"]),
         "hocbf_infeasible_fallback": "max_brake",
         "hocbf_pb_recovery": True,
-        "hocbf_predictive_recovery": True,
+        "hocbf_predictive_recovery": bool(config.get("predictive_recovery", True)),
         "hocbf_prediction_execution_fraction": float(
             config["prediction_execution_fraction"]
         ),
@@ -247,6 +247,8 @@ def main() -> int:
     expected_version = (IMPLEMENTATION_VERSION_V6 if manifest.get("protocol_id", "").endswith("-v6")
                         else IMPLEMENTATION_VERSION_V5 if manifest.get("protocol_id", "").endswith("-v5")
                         else IMPLEMENTATION_VERSION)
+    if manifest.get("recoverability_admission_align_states", False):
+        expected_version = "dynamic_admission_v6_common_epoch_v1"
     if manifest.get("implementation_version") != expected_version:
         parser.error(
             "implementation_version 必须为 "
@@ -311,6 +313,9 @@ def main() -> int:
         velocity_command_mode=manifest["velocity_command_mode"],
         tau_command_s=float(manifest["tau_command_s"]),
         recoverability_admission_coordinator=coordinator,
+        recoverability_admission_align_states=bool(
+            manifest.get("recoverability_admission_align_states", False)
+        ),
         **_ra_kwargs(manifest["ra_config"]),
     )
     audit = _trajectory_audit(

@@ -1,0 +1,33 @@
+{
+  "profile_id": "reserve-only-selected-method-v1-20261003",
+  "method": "AEGIS_HOCBF_V4_RESERVE_ONLY",
+  "status": "已完成原种子复跑及共同控制时刻接纳修复验证；不是独立盲测",
+  "config": {
+    "role": "Reserve-Only Takeover",
+    "constraint_boundary": "full",
+    "k1": 4.0,
+    "k2": 4.0,
+    "boundary_guard": 1.0,
+    "boundary_buffer_m": 0.3,
+    "barrier_model_tau_s": 0.7,
+    "predictive_recovery": false,
+    "recovery_reserve_threshold": 1.0,
+    "recovery_alpha": 0.5,
+    "recovery_braking_accel_mps2": 2.0,
+    "recovery_boundary_buffer_m": 0.3,
+    "recovery_clear_steps": 5
+  },
+  "command_feedforward_tau_s": 0.7,
+  "provenance": {
+    "original_ablation": "drones_corrected_ablation_v2_20260921/run_settings.json",
+    "direct_rerun": "reserve_only_px4_rerun_v1_20261003",
+    "admission_input_repair": "admission_common_epoch_v1_20261003",
+    "revision_id": "admission-common-epoch-v1"
+  },
+  "scope": "直接证据包括30对任务恢复、20个四机主实验、36个固定候选库条件；多航点接纳另立共同控制时刻输入版本，完成开发12/资格15/主实验60条件。原无对齐输入的9个有效开发条件及拒绝保留；历史预测数据单独归属。",
+  "multi_waypoint_admission": {
+    "recoverability_admission_align_states": true,
+    "implementation_version": "dynamic_admission_v6_common_epoch_v1",
+    "scope": "仅新多航点接纳输入修复；不追溯更改历史或其他实验实现。"
+  }
+}

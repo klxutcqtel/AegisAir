@@ -1,0 +1,31 @@
+{
+  "protocol_id": "aegisair-admission-execution-qualification-v1",
+  "phase": "开发后冻结的未见几何/参数组合简化模型验证；不是PX4或全局鲁棒认证",
+  "parent_manifest_sha256": "bcb3aa709f7222cbadebdac7e5cba178071c0fff359435ccb8f9ff327694b9bb",
+  "candidate_limit": 3,
+  "speeds_mps": [0.0, 0.6, 1.2],
+  "headings_deg": [30, 120, 210, 300],
+  "nominal": {"tau_s": 0.7, "delay_s": 0.05, "accel_mps2": 2.0},
+  "screen_box": {"tau_s": [0.54, 0.96], "delay_s": [0.05, 0.15], "accel_mps2": [1.25, 2.0]},
+  "evaluation_plants": [
+    {"name": "unseen_a", "tau_s": 0.65, "delay_s": 0.1, "accel_mps2": 1.5},
+    {"name": "unseen_b", "tau_s": 0.85, "delay_s": 0.05, "accel_mps2": 1.75},
+    {"name": "unseen_c", "tau_s": 0.95, "delay_s": 0.15, "accel_mps2": 1.25}
+  ],
+  "control_dt_s": 0.05,
+  "plant_dt_s": 0.01,
+  "horizon_s": 16.0,
+  "physical_clearance_m": 2.4,
+  "screen_clearance_m": 2.6,
+  "route_length_limit_m": 18.0,
+  "arena": [-9.0, 9.0, -9.0, 9.0],
+  "geometries": [
+    {"name": "slanted_clear", "start": [-5.0, -3.5], "goal": [3.5, -2.5], "failed_position": [0.5, 1.5], "failed_velocity": [0.2, -0.1]},
+    {"name": "reverse_turn", "start": [5.0, 0.5], "goal": [-4.0, -0.5], "failed_position": [0.5, 0.0], "failed_velocity": [-0.2, 0.1]},
+    {"name": "vertical_turn", "start": [-0.5, -5.5], "goal": [0.5, 4.0], "failed_position": [0.0, -0.5], "failed_velocity": [0.15, 0.2]},
+    {"name": "occupied_diagonal", "start": [-4.5, -3.0], "goal": [1.5, 1.0], "failed_position": [1.5, 1.0], "failed_velocity": [0.0, 0.0]}
+  ],
+  "methods": ["geometry", "nominal_dynamic", "scenario_dynamic", "hold"],
+  "interpretation": "2.4m是预先规定的任务中心间距要求，不是机体碰撞阈值。扩大场地是独立后续协议的明确域变化，旧边界越界结果保留。人工执行参数不是PX4标定误差界。",
+  "advance_rule": "全组完成并核验后，名义动态或场景动态必须非空成功接纳、非空正确拒绝、零错误接纳、零不安全hold且相对几何减少错误接纳，才能称该有限协议通过；否则保存负结果并停止确认性扩展。"
+}

@@ -1,12 +1,12 @@
 # AegisAir 可复现性说明
 
-## 本公开版本包含什么
+## 源码与公开证据
 
-本仓库提供运行时安全保障、任务恢复、接口规范、控制器配置和离线测试。它支持复核算法逻辑、接口契约与冻结配置的一致性。
+Git 仓库提供 RA、恢复、接口、配置、离线测试和分析脚本。论文、投稿材料、checkpoint 和实验产物不进入 Git。九月与十月证据包见 [DATA_RELEASE.md](DATA_RELEASE.md)，提供入选轨迹、摘要、运行设置、有效性记录、哈希及源码快照。
 
-本仓库不提供论文、投稿材料、训练 checkpoint、PX4/Gazebo 原始日志、轨迹、ULog、统计汇总或其他实验产物。因此，克隆者不能从本仓库重建历史实验数值；可以用相同配置重新运行新的独立实验。
+发布时源码不能替代每次实验记录的执行哈希；十月归档还保留实验内冻结源码。代码检查、历史数据复算与重新运行闭环是不同层次的复现。部分分析器含历史绝对路径，解压后需重定位；归档校验本身只使用相对路径。
 
-## 最小可复现检查
+## 离线检查
 
 ```bash
 conda env create -f environment.yml
@@ -17,22 +17,19 @@ python scripts/validate_pcbf_baseline.py
 python scripts/validate_dynamic_admission.py
 ```
 
-该检查不需要 GPU、PX4、Gazebo 或原始数据。测试覆盖加速度约束的 HOCBF/QP、不可行时制动回退、确定性任务恢复、消息 schema 以及关键 manifest 的结构。PCBF 验证使用 CasADi/IPOPT 运行确定性的两阶段非线性规划检查；`validate_dynamic_admission.py` 只验证核心 `time_aligned_dynamic_rollout_v2` 的速度相关决策与计算时延，不验证 MQTT 传输、ROS 2 executor 或 PX4/Gazebo 闭环。
+单元测试不依赖硬件。PCBF 数值验证需 CasADi/IPOPT；动态接纳验证只覆盖核心 rollout，不验证遥测、执行器或飞行性能。
 
-## 闭环仿真复现
+## 当前配置
 
-完整 PX4/Gazebo 复现另需安装 PX4 SITL、Gazebo、ROS 2、MQTT broker 和 AegisAir adapter bridge。服务启动后，以冻结 manifest 运行对应 runner，并使用一个不存在的新输出目录：
+- `configs/reserve_only_selected_method_v1.json`：关闭辅助三步预测，保留 PB-CBF、余量触发与恢复锁存。
+- `configs/admission_common_epoch_revision_v1.json`：多航点接纳输入按匀速模型对齐共同控制时刻；对应协议 `dynamic_admission_v6_common_epoch_v1`。归档内各阶段 run_settings.json 才是本次实际完整运行设置。
+- 固定候选库执行接纳使用独立 runner 和冻结协议；不能将其三条路线与多航点 101 候选混为一个实验。
+- 历史 v4/v5/v6 协议继续用于识别其原始数据；不能替换协议标识来冒充另一实现。
 
-```bash
-python marllib/run_c3_gazebo.py \
-  --manifest configs/c3_closed_loop_smoke_v1.json \
-  --out-dir /path/to/new-output
-```
+资格只依赖同次完整开发通过，主实验只依赖同次完整资格通过。已完成、有效的失败不重跑；基础设施异常须保留原尝试并依据日志诊断。沿用原种子和场景的复跑不是新增独立验证。
 
-原始实验的 checkpoint、日志和轨迹未公开；运行结果应被视为新的复现实验，不应冒充为历史封存结果。
+## 闭环运行与边界
 
-任务接纳的 v1/v2/v3 manifest 与旧 sealed 结果均为历史协议记录。当前 PX4/Gazebo runner 只接受 `dynamic_admission_v4_nonblocking_bridge` 的 calibration/qualification manifest：先完成 calibration-v4 并取得 `GO`，再运行 qualification-v4；两者通过前不得生成 sealed-v4 manifest。v4 仅冻结 MQTT 发布为非阻塞、返回码受检的入队路径及新的协议标识，保持 v3 的几何、seed、条件顺序和算法参数不变。该闭环验收不能由上述离线 v2 核心模型检查替代；具体启动命令见 `docs/PX4_GAZEBO_REPRODUCTION.md`。
+环境与单条件入口见 [docs/PX4_GAZEBO_REPRODUCTION.md](docs/PX4_GAZEBO_REPRODUCTION.md)。部分批调度器固定了作者的外置盘路径、容器名与历史父目录，公开用于检查实验组织逻辑；不保证在任意机器直接运行。跨机器复跑应使用对应完整设置和全新输出根，记录本机环境，保留每个有效结果及无效尝试。
 
-## 结果与失败的记录
-
-有效碰撞、`min_rho <= 0`、runtime-assurance bypass、任务未完成和权限撤销失败均应作为有效结果保留。启动或 arm 前失败应单独标记，不应混入算法试验统计。
+归档省略大体积容器/PX4/MQTT 文本日志和多数运行侧文件，因此不完整重建历史环境。正采样裕量、零模拟碰撞和输入存在性命题均不能替代真实飞行验证或每条发布命令的约束证明。

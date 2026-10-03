@@ -41,3 +41,7 @@ deepseek_api_key
 
 # OS
 .DS_Store
+
+# Local generated documents and audit artifacts
+output/
+._*

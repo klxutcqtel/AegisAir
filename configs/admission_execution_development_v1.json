@@ -1,0 +1,31 @@
+{
+  "protocol_id": "aegisair-admission-execution-development-v1",
+  "phase": "独立开发诊断；不是PX4、实机或连续时间认证",
+  "candidate_limit": 3,
+  "speeds_mps": [0.0, 0.75, 1.5],
+  "headings_deg": [0, 90, 180, 270],
+  "nominal": {"tau_s": 0.7, "delay_s": 0.05, "accel_mps2": 2.0},
+  "screen_box": {"tau_s": [0.54, 0.96], "delay_s": [0.05, 0.15], "accel_mps2": [1.25, 2.0]},
+  "evaluation_plants": [
+    {"name": "nominal", "tau_s": 0.7, "delay_s": 0.05, "accel_mps2": 2.0},
+    {"name": "slow_delayed", "tau_s": 0.9, "delay_s": 0.1, "accel_mps2": 1.4},
+    {"name": "fast_delayed", "tau_s": 0.6, "delay_s": 0.1, "accel_mps2": 1.4},
+    {"name": "weak_braking", "tau_s": 0.8, "delay_s": 0.05, "accel_mps2": 1.3}
+  ],
+  "control_dt_s": 0.05,
+  "plant_dt_s": 0.01,
+  "horizon_s": 16.0,
+  "physical_clearance_m": 2.4,
+  "screen_clearance_m": 2.6,
+  "route_length_limit_m": 18.0,
+  "arena": [-6.0, 6.0, -6.0, 6.0],
+  "geometries": [
+    {"name": "wide_straight", "start": [-4.0, -3.0], "goal": [4.0, -3.0], "failed_position": [0.0, 1.0], "failed_velocity": [0.0, 0.0]},
+    {"name": "on_path_turn", "start": [-5.0, 0.0], "goal": [4.0, 0.0], "failed_position": [-1.0, 0.0], "failed_velocity": [0.0, 0.0]},
+    {"name": "boundary_turn", "start": [-5.5, -2.8], "goal": [3.5, 1.8], "failed_position": [-1.0, 0.0], "failed_velocity": [0.4, 0.0]},
+    {"name": "occupied_goal", "start": [-4.0, -2.0], "goal": [2.0, 0.0], "failed_position": [2.0, 0.0], "failed_velocity": [0.0, 0.0]}
+  ],
+  "methods": ["geometry", "nominal_dynamic", "scenario_dynamic", "hold"],
+  "interpretation": "screen_box是人为规定的开发压力范围，未经独立标定；角点筛查不构成区间鲁棒证明。候选库限定为几何排序前三条，错误拒绝仅相对于同库的独立闭环裁判。",
+  "advance_rule": "只有完整性通过、非空接纳、非空正确拒绝且相对几何出现可解释的错误接纳减少，才冻结未见几何的后续协议；否则保留负结果，停止确认性扩展。"
+}

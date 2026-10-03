@@ -68,6 +68,38 @@ def _recovery_clients(
     raise ValueError(f"unknown C3 condition: {condition}")
 
 
+
+def _c3_ra_kwargs(ra_config) -> dict[str, Any]:
+    if ra_config is None:
+        return {
+            "tau_ctrl": 0.2, "tau_px4": 0.2, "execution_model": "exact_zoh",
+            "sampled_data": True, "gamma": 0.1,
+        }
+    return {
+        "use_hocbf": True,
+        "hocbf_k1": float(ra_config["k1"]),
+        "hocbf_k2": float(ra_config["k2"]),
+        "tau_ctrl": float(ra_config["tau_ctrl_s"]),
+        "tau_px4": float(ra_config["execution_tau_s"]),
+        "tau_px4_min": float(ra_config["execution_tau_s"]),
+        "tau_px4_max": float(ra_config["execution_tau_s"]),
+        "execution_model": "exact_zoh",
+        "sampled_data": False,
+        "hocbf_boundary_guard": float(ra_config["boundary_guard"]),
+        "hocbf_boundary_buffer_m": float(ra_config["boundary_buffer_m"]),
+        "hocbf_infeasible_fallback": "max_brake",
+        "hocbf_pb_recovery": True,
+        "hocbf_predictive_recovery": bool(ra_config.get("predictive_recovery", True)),
+        "hocbf_prediction_execution_fraction": float(ra_config["prediction_execution_fraction"]),
+        "hocbf_prediction_steps": int(ra_config["prediction_steps"]),
+        "hocbf_recovery_reserve_threshold": float(ra_config["recovery_reserve_threshold"]),
+        "hocbf_recovery_alpha": float(ra_config["recovery_alpha"]),
+        "hocbf_recovery_braking_accel": float(ra_config["recovery_braking_accel_mps2"]),
+        "hocbf_recovery_boundary_buffer_m": float(ra_config["recovery_boundary_buffer_m"]),
+        "hocbf_recovery_clear_steps": int(ra_config["recovery_clear_steps"]),
+        "ra_command_feedforward_tau_s": float(ra_config["execution_tau_s"]),
+    }
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="C3 closed-loop PX4/Gazebo runner")
     parser.add_argument("--manifest", type=Path, required=True)
@@ -129,36 +161,6 @@ def main() -> int:
     }:
         parser.error("仅 C3-v4 protocol 可以提供 ra_config")
 
-    def c3_ra_kwargs() -> dict[str, Any]:
-        if ra_config is None:
-            return {
-                "tau_ctrl": 0.2, "tau_px4": 0.2, "execution_model": "exact_zoh",
-                "sampled_data": True, "gamma": 0.1,
-            }
-        return {
-            "use_hocbf": True,
-            "hocbf_k1": float(ra_config["k1"]),
-            "hocbf_k2": float(ra_config["k2"]),
-            "tau_ctrl": float(ra_config["tau_ctrl_s"]),
-            "tau_px4": float(ra_config["execution_tau_s"]),
-            "tau_px4_min": float(ra_config["execution_tau_s"]),
-            "tau_px4_max": float(ra_config["execution_tau_s"]),
-            "execution_model": "exact_zoh",
-            "sampled_data": False,
-            "hocbf_boundary_guard": float(ra_config["boundary_guard"]),
-            "hocbf_boundary_buffer_m": float(ra_config["boundary_buffer_m"]),
-            "hocbf_infeasible_fallback": "max_brake",
-            "hocbf_pb_recovery": True,
-            "hocbf_predictive_recovery": True,
-            "hocbf_prediction_execution_fraction": float(ra_config["prediction_execution_fraction"]),
-            "hocbf_prediction_steps": int(ra_config["prediction_steps"]),
-            "hocbf_recovery_reserve_threshold": float(ra_config["recovery_reserve_threshold"]),
-            "hocbf_recovery_alpha": float(ra_config["recovery_alpha"]),
-            "hocbf_recovery_braking_accel": float(ra_config["recovery_braking_accel_mps2"]),
-            "hocbf_recovery_boundary_buffer_m": float(ra_config["recovery_boundary_buffer_m"]),
-            "hocbf_recovery_clear_steps": int(ra_config["recovery_clear_steps"]),
-            "ra_command_feedforward_tau_s": float(ra_config["execution_tau_s"]),
-        }
 
     all_trials = list(manifest["trials"])
     selected_ids = set(args.trial_id or [])
@@ -199,7 +201,7 @@ def main() -> int:
                 trajectory=trajectory,
                 reset_starts=reset_starts,
                 rate_hz=rate_hz,
-                **c3_ra_kwargs(),
+                **_c3_ra_kwargs(ra_config),
                 mission_change=mission_change,
                 change_step=change_step,
                 failed_drone=failed_drone,

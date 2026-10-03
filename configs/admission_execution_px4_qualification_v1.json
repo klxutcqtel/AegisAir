@@ -1,0 +1,611 @@
+{
+  "protocol_id": "aegisair-execution-admission-px4-qualification-v1",
+  "phase": "开发后冻结的新位置与运动方向限定验证；几何变换同一家族，不宣称独立任意环境外推",
+  "max_steps": 600,
+  "rate_hz": 20,
+  "drone_ids": [
+    2,
+    3
+  ],
+  "conditions": [
+    "GEOMETRY",
+    "NOMINAL_DYNAMIC",
+    "HOLD"
+  ],
+  "recoverability_admission": {
+    "clearance_m": 2.4,
+    "tracking_error_buffer_m": 0.2,
+    "braking_accel_mps2": 2.0,
+    "braking_accel_uncertainty_mps2": 0.25,
+    "ring_extra_m": [
+      0.4,
+      0.8,
+      1.2
+    ],
+    "ring_samples": 32,
+    "arena": [
+      -6.0,
+      6.0,
+      -6.0,
+      6.0
+    ],
+    "waypoint_epsilon_m": 0.55,
+    "max_route_length_m": 18.0,
+    "dt_s": 0.05,
+    "rollout_horizon_s": 16.0,
+    "reaction_delay_s": 0.05,
+    "goal_gain_s_inv": 1.5,
+    "velocity_gain_s_inv": 2.0,
+    "healthy_velocity_limit_mps": 1.5,
+    "healthy_acceleration_limit_mps2": 2.0,
+    "execution_tau_s": 0.7,
+    "command_feedforward_tau_s": 0.7,
+    "terminal_speed_mps": 0.15,
+    "stabilization_wait_s": 2.0,
+    "stabilization_speed_margin_mps": 0.05,
+    "stabilization_consecutive_samples": 3
+  },
+  "ra_config": {
+    "tau_ctrl_s": 0.2,
+    "execution_tau_s": 0.7,
+    "k1": 4,
+    "k2": 4,
+    "boundary_guard": 1,
+    "boundary_buffer_m": 0.3,
+    "prediction_execution_fraction": 0,
+    "prediction_steps": 3,
+    "recovery_reserve_threshold": 1,
+    "recovery_alpha": 0.5,
+    "recovery_braking_accel_mps2": 2,
+    "recovery_boundary_buffer_m": 0.3,
+    "recovery_clear_steps": 5
+  },
+  "geometries": {
+    "rotate90": {
+      "reset_starts": {
+        "2": [
+          -0.2,
+          -0.7,
+          2.5
+        ],
+        "3": [
+          -1.0,
+          -4.7,
+          2.5
+        ]
+      },
+      "base_goals": {
+        "2": [
+          -0.2,
+          4.3,
+          2.5
+        ],
+        "3": [
+          3.8,
+          -4.7,
+          2.5
+        ]
+      },
+      "critical_goal": [
+        -0.2,
+        4.3
+      ],
+      "waypoint_routes": [
+        [
+          [
+            -3.9269840655322756,
+            -1.441343223661287
+          ]
+        ],
+        [
+          [
+            3.5269840655322753,
+            -1.441343223661287
+          ]
+        ],
+        [
+          [
+            -4.0,
+            -0.7
+          ]
+        ]
+      ],
+      "transform_from_development": {
+        "matrix": [
+          [
+            0,
+            -1
+          ],
+          [
+            1,
+            0
+          ]
+        ],
+        "translation": [
+          -0.2,
+          0.3
+        ]
+      }
+    },
+    "rotate180": {
+      "reset_starts": {
+        "2": [
+          1.3,
+          -0.2,
+          2.5
+        ],
+        "3": [
+          5.3,
+          -1.0,
+          2.5
+        ]
+      },
+      "base_goals": {
+        "2": [
+          -3.7,
+          -0.2,
+          2.5
+        ],
+        "3": [
+          5.3,
+          3.8,
+          2.5
+        ]
+      },
+      "critical_goal": [
+        -3.7,
+        -0.2
+      ],
+      "waypoint_routes": [
+        [
+          [
+            2.041343223661287,
+            -3.9269840655322756
+          ]
+        ],
+        [
+          [
+            2.041343223661287,
+            3.5269840655322753
+          ]
+        ],
+        [
+          [
+            1.3,
+            -4.0
+          ]
+        ]
+      ],
+      "transform_from_development": {
+        "matrix": [
+          [
+            -1,
+            0
+          ],
+          [
+            0,
+            -1
+          ]
+        ],
+        "translation": [
+          0.3,
+          -0.2
+        ]
+      }
+    },
+    "reflect_y": {
+      "reset_starts": {
+        "2": [
+          -0.8,
+          0.25,
+          2.5
+        ],
+        "3": [
+          -4.8,
+          -0.55,
+          2.5
+        ]
+      },
+      "base_goals": {
+        "2": [
+          4.2,
+          0.25,
+          2.5
+        ],
+        "3": [
+          -4.8,
+          4.25,
+          2.5
+        ]
+      },
+      "critical_goal": [
+        4.2,
+        0.25
+      ],
+      "waypoint_routes": [
+        [
+          [
+            -1.5413432236612872,
+            -3.4769840655322755
+          ]
+        ],
+        [
+          [
+            -1.5413432236612872,
+            3.9769840655322755
+          ]
+        ],
+        [
+          [
+            -0.8,
+            -3.55
+          ]
+        ]
+      ],
+      "transform_from_development": {
+        "matrix": [
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            -1
+          ]
+        ],
+        "translation": [
+          0.2,
+          0.25
+        ]
+      }
+    },
+    "translate": {
+      "reset_starts": {
+        "2": [
+          -0.65,
+          -0.3,
+          2.5
+        ],
+        "3": [
+          -4.65,
+          0.5,
+          2.5
+        ]
+      },
+      "base_goals": {
+        "2": [
+          4.35,
+          -0.3,
+          2.5
+        ],
+        "3": [
+          -4.65,
+          -4.3,
+          2.5
+        ]
+      },
+      "critical_goal": [
+        4.35,
+        -0.3
+      ],
+      "waypoint_routes": [
+        [
+          [
+            -1.3913432236612873,
+            3.4269840655322756
+          ]
+        ],
+        [
+          [
+            -1.3913432236612873,
+            -4.026984065532275
+          ]
+        ],
+        [
+          [
+            -0.65,
+            3.5
+          ]
+        ]
+      ],
+      "transform_from_development": {
+        "matrix": [
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "translation": [
+          0.35,
+          -0.3
+        ]
+      }
+    },
+    "aligned_control": {
+      "reset_starts": {
+        "2": [
+          -1.25,
+          -0.2,
+          2.5
+        ],
+        "3": [
+          -5.25,
+          0.6000000000000001,
+          2.5
+        ]
+      },
+      "base_goals": {
+        "2": [
+          3.75,
+          -0.2,
+          2.5
+        ],
+        "3": [
+          -5.25,
+          3.8,
+          2.5
+        ]
+      },
+      "critical_goal": [
+        3.75,
+        -0.2
+      ],
+      "waypoint_routes": [
+        [
+          [
+            -1.9913432236612871,
+            3.5269840655322753
+          ]
+        ],
+        [
+          [
+            -1.9913432236612871,
+            -3.9269840655322756
+          ]
+        ],
+        [
+          [
+            -1.25,
+            3.5999999999999996
+          ]
+        ]
+      ],
+      "transform_from_development": {
+        "matrix": [
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "translation": [
+          -0.25,
+          -0.2
+        ]
+      }
+    },
+    "occupied_control": {
+      "reset_starts": {
+        "2": [
+          0.25,
+          1.75,
+          2.5
+        ],
+        "3": [
+          2.25,
+          -4.25,
+          2.5
+        ]
+      },
+      "base_goals": {
+        "2": [
+          0.25,
+          1.75,
+          2.5
+        ],
+        "3": [
+          2.25,
+          3.75,
+          2.5
+        ]
+      },
+      "critical_goal": [
+        0.25,
+        1.75
+      ],
+      "waypoint_routes": [
+        [
+          [
+            -3.75,
+            0.75
+          ]
+        ],
+        [
+          [
+            4.25,
+            0.75
+          ]
+        ],
+        [
+          [
+            -4.25,
+            -0.25
+          ]
+        ]
+      ],
+      "transform_from_development": {
+        "matrix": [
+          [
+            0,
+            -1
+          ],
+          [
+            1,
+            0
+          ]
+        ],
+        "translation": [
+          0.25,
+          -0.25
+        ]
+      }
+    }
+  },
+  "trials": [
+    {
+      "trial_id": "execpx4_qual01",
+      "geometry_id": "rotate90",
+      "seed": 43001,
+      "change_step": 18,
+      "condition_order": [
+        "GEOMETRY",
+        "NOMINAL_DYNAMIC",
+        "HOLD"
+      ],
+      "expected_dynamic_admission": "admit"
+    },
+    {
+      "trial_id": "execpx4_qual02",
+      "geometry_id": "rotate90",
+      "seed": 43002,
+      "change_step": 20,
+      "condition_order": [
+        "GEOMETRY",
+        "HOLD",
+        "NOMINAL_DYNAMIC"
+      ],
+      "expected_dynamic_admission": "admit"
+    },
+    {
+      "trial_id": "execpx4_qual03",
+      "geometry_id": "rotate180",
+      "seed": 43003,
+      "change_step": 18,
+      "condition_order": [
+        "NOMINAL_DYNAMIC",
+        "GEOMETRY",
+        "HOLD"
+      ],
+      "expected_dynamic_admission": "admit"
+    },
+    {
+      "trial_id": "execpx4_qual04",
+      "geometry_id": "rotate180",
+      "seed": 43004,
+      "change_step": 20,
+      "condition_order": [
+        "NOMINAL_DYNAMIC",
+        "HOLD",
+        "GEOMETRY"
+      ],
+      "expected_dynamic_admission": "admit"
+    },
+    {
+      "trial_id": "execpx4_qual05",
+      "geometry_id": "reflect_y",
+      "seed": 43005,
+      "change_step": 18,
+      "condition_order": [
+        "HOLD",
+        "GEOMETRY",
+        "NOMINAL_DYNAMIC"
+      ],
+      "expected_dynamic_admission": "admit"
+    },
+    {
+      "trial_id": "execpx4_qual06",
+      "geometry_id": "reflect_y",
+      "seed": 43006,
+      "change_step": 20,
+      "condition_order": [
+        "HOLD",
+        "NOMINAL_DYNAMIC",
+        "GEOMETRY"
+      ],
+      "expected_dynamic_admission": "admit"
+    },
+    {
+      "trial_id": "execpx4_qual07",
+      "geometry_id": "translate",
+      "seed": 43007,
+      "change_step": 18,
+      "condition_order": [
+        "GEOMETRY",
+        "NOMINAL_DYNAMIC",
+        "HOLD"
+      ],
+      "expected_dynamic_admission": "admit"
+    },
+    {
+      "trial_id": "execpx4_qual08",
+      "geometry_id": "translate",
+      "seed": 43008,
+      "change_step": 20,
+      "condition_order": [
+        "GEOMETRY",
+        "HOLD",
+        "NOMINAL_DYNAMIC"
+      ],
+      "expected_dynamic_admission": "admit"
+    },
+    {
+      "trial_id": "execpx4_qual09",
+      "geometry_id": "aligned_control",
+      "seed": 43009,
+      "change_step": 18,
+      "condition_order": [
+        "NOMINAL_DYNAMIC",
+        "GEOMETRY",
+        "HOLD"
+      ],
+      "expected_dynamic_admission": "admit"
+    },
+    {
+      "trial_id": "execpx4_qual10",
+      "geometry_id": "aligned_control",
+      "seed": 43010,
+      "change_step": 20,
+      "condition_order": [
+        "NOMINAL_DYNAMIC",
+        "HOLD",
+        "GEOMETRY"
+      ],
+      "expected_dynamic_admission": "admit"
+    },
+    {
+      "trial_id": "execpx4_qual11",
+      "geometry_id": "occupied_control",
+      "seed": 43011,
+      "change_step": 18,
+      "condition_order": [
+        "HOLD",
+        "GEOMETRY",
+        "NOMINAL_DYNAMIC"
+      ],
+      "expected_dynamic_admission": "reject"
+    },
+    {
+      "trial_id": "execpx4_qual12",
+      "geometry_id": "occupied_control",
+      "seed": 43012,
+      "change_step": 20,
+      "condition_order": [
+        "HOLD",
+        "NOMINAL_DYNAMIC",
+        "GEOMETRY"
+      ],
+      "expected_dynamic_admission": "reject"
+    }
+  ],
+  "scope": "4种预声明几何变换的转弯机制+同向控制+目标占据拒绝控制；每个2个新种子，三方法顺序平衡；共同RA及航点，30s逐步审计。",
+  "stop_rule": "只重试基础设施无效同种子同条件最多3次。动态条件碰撞/非正rho/权限绕过/发布未知/选定QP不可行完成配对后停止。间距、任务、发布约束有效失败保留并继续全组，不改阈值或路线。",
+  "failed_vehicle_loiter": true,
+  "qualification_gate": "动态全部转弯/同向控制完成且单次提交、任务间距>=2.4m、rho>0、无碰撞/选定QP不可行/发布失败或未知/权限绕过；占据控制零提交且安全保持；至少2个不同转弯几何出现配对任务间距改善和实测同状态选路差异。任何不满足为限定验证NO_GO，不删除有效失败。"
+}

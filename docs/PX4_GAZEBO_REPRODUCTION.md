@@ -1,6 +1,6 @@
 # PX4/Gazebo 闭环复现
 
-本目录使论文的 PX4/Gazebo 闭环路径不再依赖作者电脑上的私有目录或私有镜像。
+本说明给出基础环境与单条件运行入口。批调度器中仍有机器专用路径；跨机器运行需按实际环境重定位，不能将启动成功视为完整复现。
 
 ## 前提
 
@@ -36,7 +36,7 @@ bash scripts/run_c1_paper_trial.sh \
 
 该脚本启动两机 S1 世界、发送 GCS heartbeat、等待 MQTT 遥测，再运行对应 runner；结束时只停止它启动的 PID。完整试验需要对冻结 manifest 内每个 `trial_id` 与 `condition_order` 重复调用，并保留每次输出。
 
-修复后的任务接纳 calibration-v4 使用独立入口：
+以下为保留的 calibration-v4 历史协议示例（不是当前论文选定配置）：
 
 ```bash
 export PX4_DIR=/absolute/path/to/PX4-Autopilot
@@ -46,8 +46,8 @@ bash scripts/run_recoverability_admission_trial.sh \
   /absolute/path/to/new-output
 ```
 
-先完成 calibration-v4 的所有冻结条件并运行分析器；只有结果为 `GO` 才能启动 qualification-v4。v4 将 adapter MQTT 发布冻结为非阻塞入队；旧 manifest 只保留为历史记录，当前任务接纳 runner 不接受旧协议标识。
+当前多航点接纳使用 `dynamic_admission_v6_common_epoch_v1`，完整阶段设置见十月 Release 中 `admission_common_epoch_v1_20261003/*/run_settings.json`。同一单条件入口可读取其完整 manifest；必须使用其中实际 trial_id/condition 和新的输出目录。先完成本次开发与分析，再按其 GO 启动资格和主实验，不借用历史 GO。`scripts/run_admission_common_epoch_campaign.py` 保留作者的 `/Volumes/Expansion/Aegis` 父目录和历史配置依赖，属于实验调度记录，不能不作路径适配直接运行。固定三路线分支使用 `marllib/run_execution_admission_px4.py`，与多航点 gate 分开。
 
 ## 边界
 
-公开仓库不含历史 PX4/Gazebo 轨迹、日志或 checkpoint。重新运行得到的是新的复现实验，不能替代论文中封存的数值。
+Git 源码不含轨迹、日志或 checkpoint；入选历史证据通过 DATA_RELEASE.md 指向的 Release 提供。重新运行得到的是新的复现实验，不能替代论文中封存的数值。
