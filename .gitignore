@@ -45,3 +45,11 @@ deepseek_api_key
 # Local generated documents and audit artifacts
 output/
 ._*
+
+# 本地助手配置与对话交接文件不发布。
+AGENTS.md
+CLAUDE.md
+GEMINI.md
+.codex/
+.claude/
+handoff/
